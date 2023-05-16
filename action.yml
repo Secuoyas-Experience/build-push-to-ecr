@@ -1,0 +1,53 @@
+name: 'Build and Push Docker image to ECR'
+description: 'Builds and pushes docker images to AWS ECR'
+inputs:
+  name: 
+    description: name of the docker image (<registry>/<name>:<version>)
+    required: true
+  version:
+      description: version (tag) of the docker image (<registry>/<name>:<version>)
+      required: true
+  from-artifact:
+      description: Github artifact containing sources to build the docker image from
+      required: false
+  aws-region: 
+      description: AWS region where the ECR registry is located
+      required: false
+  aws-role-to-assume:
+      description: AWS role name allowed to push images to ECR
+      required: false
+runs:
+  using: "composite"
+  steps:
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-region: "${{ inputs.aws-region != '' ? inputs.aws-region : secrets.AWS_REGION }}"
+        role-to-assume: "${{ inputs.aws-role-to-assume != '' ? inputs.aws-role-to-assume : secrets.AWS_ROLE_TO_ASSUME_ARN }}"
+        role-session-name: "secuoyas-gh-ecr-session-name"
+
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+      with:
+        buildkitd-flags: --debug
+
+    - name: Download Private API Artifacts
+      uses: actions/download-artifact@v3
+      with:
+        name: "${{ inputs.name != '' ? inputs.name : inputs.from-artifact }}"
+
+    - name: Build and push API (prv)
+      uses: docker/build-push-action@v4
+      with:
+        context: .
+        file: ./docker/Dockerfile
+        push: true
+        tags: |
+          ${{ steps.login-ecr.outputs.registry }}/${{ inputs.name }}:latest
+          ${{ steps.login-ecr.outputs.registry }}/${{ inputs.name }}:${{ inputs.version }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
