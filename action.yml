@@ -9,22 +9,21 @@ inputs:
       required: true
   from-artifact:
       description: Github artifact containing sources to build the docker image from
-      required: false
+      required: true
   aws-region: 
       description: AWS region where the ECR registry is located
-      required: false
+      required: true
   aws-role-to-assume:
       description: AWS role name allowed to push images to ECR
-      required: false
+      required: true
 runs:
   using: "composite"
   steps:
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v2
       with:
-        aws-region: "${{ inputs.aws-region != '' ? inputs.aws-region : secrets.AWS_REGION }}"
-        role-to-assume: "${{ inputs.aws-role-to-assume != '' ? inputs.aws-role-to-assume : secrets.AWS_ROLE_TO_ASSUME_ARN }}"
-        role-session-name: "secuoyas-gh-ecr-session-name"
+        aws-region: "${{ inputs.aws-region }}"
+        role-to-assume: "${{ inputs.aws-role-to-assume  }}"
 
     - name: Login to Amazon ECR
       id: login-ecr
@@ -38,7 +37,7 @@ runs:
     - name: Download Private API Artifacts
       uses: actions/download-artifact@v3
       with:
-        name: "${{ inputs.name != '' ? inputs.name : inputs.from-artifact }}"
+        name: "${{ inputs.name }}"
 
     - name: Build and push API (prv)
       uses: docker/build-push-action@v4

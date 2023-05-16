@@ -1,6 +1,7 @@
 # build-push-to-ecr
 
-Github action responsible for building and pushing docker images to Secuoyas' ECR registries
+Github action responsible for building and pushing docker images to ECR registries following a specific
+convention
 
 ## Conventions
 
