@@ -12,11 +12,11 @@ This action assumes that there's an artifact created in a previous step with a s
 
 ## Inputs
 
-- `name`: 
-- `version`: 
-- `from-artifact`:
-- `aws-region`:
-- `aws-role-to-assume`:
+- `name`: (**required**) Name of the docker image
+- `version`: (**required**) Version to be published. Every time an image is published is also tagged as `latest`
+- `from-artifact`: the Github artifact to download to get the binaries and `Dockerfile` from
+- `aws-region`: AWS region where the ECR is located
+- `aws-role-to-assume`: AWS role allowed to push images to ECR
 
 ## Usage
 
