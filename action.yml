@@ -37,7 +37,7 @@ runs:
     - name: Download Private API Artifacts
       uses: actions/download-artifact@v3
       with:
-        name: "${{ inputs.name }}"
+        name: "${{ inputs.from-artifact }}"
 
     - name: Build and push API (prv)
       uses: docker/build-push-action@v4
