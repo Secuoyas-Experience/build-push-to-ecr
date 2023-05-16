@@ -14,9 +14,9 @@ This action assumes that there's an artifact created in a previous step with a s
 
 - `name`: (**required**) Name of the docker image
 - `version`: (**required**) Version to be published. Every time an image is published is also tagged as `latest`
-- `from-artifact`: the Github artifact to download to get the binaries and `Dockerfile` from
-- `aws-region`: AWS region where the ECR is located
-- `aws-role-to-assume`: AWS role allowed to push images to ECR
+- `from-artifact`: the Github artifact to download to get the binaries and `Dockerfile` from. If not provided will have the same name as the docker image name provided.
+- `aws-region`: AWS region where the ECR is located. If not provided it will try to get the value from ${{ secrets.AWS_REGION }}
+- `aws-role-to-assume`: AWS role ARN allowed to push images to ECR. If not provided it will try to get the value from ${{ secrets.AWS_ROLE_TO_ASSUME }}
 
 ## Usage
 
