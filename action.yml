@@ -35,7 +35,7 @@ runs:
         buildkitd-flags: --debug
 
     - name: Download Private API Artifacts
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: "${{ inputs.from-artifact }}"
 
